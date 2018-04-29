@@ -1,0 +1,111 @@
+---
+swagger: "2.0"
+info:
+  description: "The API for the getRandomNumber service. Provides a source of pseudorandom\
+    \ numbers to users."
+  version: "1.0.0"
+  title: "getRandomNumber"
+  license:
+    name: "MIT"
+basePath: "/api/v1"
+schemes:
+- "https"
+consumes:
+- "application/json"
+produces:
+- "application/json"
+paths:
+  /user/create:
+    post:
+      description: "Register a new user"
+      operationId: "create_user"
+      parameters:
+      - in: "body"
+        name: "user"
+        description: "User to register"
+        required: true
+        schema:
+          $ref: "#/definitions/User"
+      responses:
+        201:
+          description: "User successfully created or already exists. A confirmation\
+            \ e-mail has been sent. To avoid leaking user e-mails, we silently ignore\
+            \ requests to create users with duplicate e-mails."
+        400:
+          description: "Invalid or malformed request"
+      x-swagger-router-controller: "swagger_server.controllers.default_controller"
+  /user/confirm:
+    post:
+      description: "Confirm a registered user"
+      operationId: "activate_user"
+      parameters:
+      - name: "token"
+        in: "query"
+        description: "@@@ Some sort of confirmation token. Ideally, should be fast\
+          \ to link this back to the user."
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Successful confirmation"
+        403:
+          description: "Invalid token"
+      x-swagger-router-controller: "swagger_server.controllers.default_controller"
+  /user/login:
+    post:
+      description: "A user logs in."
+      operationId: "login_user"
+      parameters:
+      - in: "body"
+        name: "user"
+        description: "User to log in as"
+        required: true
+        schema:
+          $ref: "#/definitions/User"
+      responses:
+        200:
+          description: "Successfully logged in."
+          schema:
+            type: "string"
+            description: "@@@ some sort of secret session token"
+        403:
+          description: "Invalid password or user doesn't exist"
+      x-swagger-router-controller: "swagger_server.controllers.default_controller"
+  /random_number:
+    get:
+      description: "Get a single random digit from 1-6"
+      operationId: "get_random_number"
+      parameters:
+      - in: "body"
+        name: "secret_session_token"
+        description: "@@@ placeholder for whatever mechanism we use for authentication\
+          \ later"
+        required: true
+        schema:
+          type: "string"
+      responses:
+        200:
+          description: "Success"
+          schema:
+            type: "integer"
+            description: "a random number"
+      x-swagger-router-controller: "swagger_server.controllers.default_controller"
+definitions:
+  User:
+    type: "object"
+    required:
+    - "email"
+    - "password"
+    properties:
+      email:
+        type: "string"
+        format: "email"
+        description: "The e-mail address for this user. This must be a valid e-mail\
+          \ address. Users must have unique e-mail addresses."
+      password:
+        type: "string"
+        format: "password"
+        description: "The password for this user."
+    example:
+      password: "password"
+      email: "email"
