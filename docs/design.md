@@ -24,4 +24,8 @@ My overall plan is to produce a spec for the user experience, use this to design
 
 First, let's document a user experience that would meet the spec. I'm going to use [OpenAPI v2](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md) - it's a mature system for describing HTTP(S) APIs with good tooling and with which I am very familiar.
 
-See api.yaml
+See api.yaml.
+
+# The actual back-end
+
+Now that we've written an API and generated a server framework from it, we now need to create the logic to actually implement the spec. We'll put this in its own module, which the server will later import. This will allow us to write UTs in the 
