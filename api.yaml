@@ -1,0 +1,101 @@
+swagger: "2.0"
+info:
+    version: "1.0.0"
+    title: getRandomNumber
+    description: The API for the getRandomNumber service. Provides a source of pseudorandom numbers to users.
+    license:
+        name: MIT
+basePath: "/api/v1"
+schemes:
+    - https
+consumes:
+    - application/json
+produces:
+    - application/json
+paths:
+    /user/create:
+        post:
+            description: Register a new user
+            operationId: create_user
+            parameters:
+                -
+                    name: user
+                    in: body
+                    description: User to register
+                    required: true
+                    schema:
+                        $ref: "#/definitions/User"
+            responses:
+                201:
+                    description: User successfully created or already exists. A confirmation e-mail has been sent. To avoid leaking user e-mails, we silently ignore requests to create users with duplicate e-mails.
+                400:
+                    description: Invalid or malformed request
+    /user/confirm:
+        post:
+            description: Confirm a registered user
+            operationId: activate_user
+            parameters:
+                -
+                    name: token
+                    in: query
+                    description: "@@@ Some sort of confirmation token. Ideally, should be fast to link this back to the user."
+                    required: true
+                    type: string
+            responses:
+                200:
+                    description: Successful confirmation
+                403:
+                    description: Invalid token
+    /user/login:
+        post:
+            description: A user logs in.
+            operationId: login_user
+            parameters:
+                -
+                    name: user
+                    in: body
+                    description: User to log in as
+                    required: true
+                    schema:
+                        $ref: "#/definitions/User"
+            responses:
+                200:
+                    description: Successfully logged in.
+                    schema:
+                        type: string
+                        description: "@@@ some sort of secret session token"
+                403:
+                    description: Invalid password or user doesn't exist
+    /random_number:
+        get:
+            description: Get a single random digit from 1-6
+            operationId: get_random_number
+            parameters:
+                -
+                    name: secret_session_token
+                    in: body
+                    description: "@@@ placeholder for whatever mechanism we use for authentication later"
+                    required: true
+                    schema:
+                        type: string
+            responses:
+                200:
+                    description: Success
+                    schema:
+                        description: a random number
+                        type: integer
+definitions:
+    User:
+        type: object
+        required:
+            - email
+            - password
+        properties:
+            email:
+                description: The e-mail address for this user. This must be a valid e-mail address. Users must have unique e-mail addresses.
+                type: string
+                format: email
+            password:
+                description: The password for this user.
+                type: string
+                format: password
