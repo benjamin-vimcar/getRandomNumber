@@ -1,9 +1,10 @@
 import connexion
-import six
+import logging
 
-from swagger_server.models.user import User  # noqa: E501
-from swagger_server import util
+from swagger_server.models.user import User as UserData# noqa: E501
+from swagger_server.get_random_number.backend import *
 
+logger = logging.getLogger(__name__)
 
 def activate_user(token):  # noqa: E501
     """activate_user
@@ -28,9 +29,13 @@ def create_user(user):  # noqa: E501
 
     :rtype: None
     """
-    if connexion.request.is_json:
-        user = User.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+    user = UserData.from_dict(connexion.request.get_json())  # noqa: E501
+
+    try:
+        User.create(user.email, user.password)
+        logger.info("Successfully created user '{}'".format(user.email))
+    except UserAlreadyExists:
+        logger.info("User already exists: '{}'".format(user.email))
 
 
 def get_random_number(secret_session_token):  # noqa: E501
@@ -43,7 +48,7 @@ def get_random_number(secret_session_token):  # noqa: E501
 
     :rtype: int
     """
-    return 'do some magic!'
+    return 4
 
 
 def login_user(user):  # noqa: E501
@@ -56,6 +61,10 @@ def login_user(user):  # noqa: E501
 
     :rtype: str
     """
-    if connexion.request.is_json:
-        user = User.from_dict(connexion.request.get_json())  # noqa: E501
-    return 'do some magic!'
+    user = UserData.from_dict(connexion.request.get_json())  # noqa: E501
+
+    try:
+        User.get(user.email).login(user.password)
+    except (NoSuchUser, IncorrectPassword) as e:
+        logger.info("Unable to log '{}' in: {}".format(user.email, e))
+        return "Invalid login information", 403
