@@ -63,7 +63,7 @@ paths:
                     description: Successfully logged in.
                     schema:
                         type: string
-                        description: "@@@ some sort of secret session token"
+                        description: "The access token that must be provided to access protected resourced."
                 403:
                     description: Invalid password or user doesn't exist
     /random_number:
@@ -73,7 +73,7 @@ paths:
             parameters:
                 -
                     name: secret_session_token
-                    in: body
+                    in: header
                     description: "@@@ placeholder for whatever mechanism we use for authentication later"
                     required: true
                     schema:
@@ -84,6 +84,13 @@ paths:
                     schema:
                         description: a random number
                         type: integer
+            security:
+                - jwt: []
+securityDefinitions:
+    jwt:
+        type: apiKey
+        name: token
+        in: header
 definitions:
     User:
         type: object

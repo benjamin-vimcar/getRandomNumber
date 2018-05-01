@@ -29,3 +29,15 @@ See api.yaml.
 # The actual back-end
 
 Now that we've written an API and generated a server framework from it, we now need to create the logic to actually implement the spec. We'll put this in its own module, which the server will later import. This will allow us to write UTs in the 
+
+# Authentication
+
+The spec suggests that we want to use some sort of token-based authentication system, so that a user needs only login once, and then just needs to present the secret token we provide them to access protected resources.
+
+I'm not familiar with this sort of authentication. A quick search suggests that JSON web tokens appears to be the de-facto standard here, so that's what I'll use.
+
+A search of https://jwt.io/ and Pypi reveals several packages that handle JWT. I don't have very long for the evaluation, so I'm going to try and use PyJWT - seemingly the most popular package, and both post-v1 and stagged as ready for production usage.
+
+Unfortunately, Connexion only supports OpenAPI v2, which does not have native JWT support.
+
+I think I can also use a JWT to conveniently produce the e-mail confirmation token. 

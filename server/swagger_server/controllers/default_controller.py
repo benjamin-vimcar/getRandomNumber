@@ -1,5 +1,6 @@
 import connexion
 import logging
+import jwt
 
 from swagger_server.models.user import User as UserData# noqa: E501
 from swagger_server.get_random_number.backend import *
@@ -38,7 +39,7 @@ def create_user(user):  # noqa: E501
         logger.info("User already exists: '{}'".format(user.email))
 
 
-def get_random_number(secret_session_token):  # noqa: E501
+def get_random_number():  # noqa: E501
     """get_random_number
 
     Get a single random digit from 1-6 # noqa: E501
