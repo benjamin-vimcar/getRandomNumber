@@ -65,7 +65,7 @@ class User(object):
                                        SUPER_SECRET_CONFIRMATION_KEY,
                                        algorithm='HS256')
 
-            print("Please tell {} the following message: '{}'".format(
+            logger.info("Please tell {} the following message: '{}'".format(
                 email,
                 confirm_token))
 
