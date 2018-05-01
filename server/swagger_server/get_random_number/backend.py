@@ -1,6 +1,8 @@
 from swagger_server.get_random_number import db
 import jwt
+import logging
 
+logger = logging.getLogger(__name__)
 
 SUPER_SECRET_CONFIRMATION_KEY = "SUPER_SECRET_CONFIRMATION_KEY"
 SUPER_SECRET_SECRET_KEY = "SUPER_SECRET_SECRET_KEY"
@@ -84,13 +86,13 @@ class User(object):
         """
         # Cope with the fact that OpenAPI v2 doesn't handle the 'Bearer'
         # section for us, so we must strip it manually here.
-        jwt = authentication_header.lstrip("Bearer ")
+        auth_token = authentication_header.replace("Bearer ", "")
 
         try:
             jwt.decode(
-                encoded,
+                auth_token,
                 SUPER_SECRET_SECRET_KEY,
-                algorithms='HS256')
+                algorithm='HS256')
         except jwt.exceptions.InvalidTokenError as e:
             raise AuthenticationFailure("Invalid authentication token") from e
 
@@ -117,11 +119,12 @@ class User(object):
         Raises `IncorrectConfirmationToken` if the user is already confirmed,
         or the token is invalid.
         """
+        logger.info("confirm_token: {}".format(confirm_token))
         try:
             payload = jwt.decode(
                 confirm_token,
                 SUPER_SECRET_CONFIRMATION_KEY,
-                algorithms='HS256')
+                algorithm='HS256')
         except jwt.exceptions.InvalidTokenError as e:
             raise IncorrectConfirmationToken("Token decoding failed") from e
 

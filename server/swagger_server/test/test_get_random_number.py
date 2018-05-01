@@ -1,5 +1,5 @@
 """
-test
+Unit tests for the backend
 """
 import unittest
 import jwt

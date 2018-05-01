@@ -1,11 +1,44 @@
 import connexion
 import logging
-import jwt
+import werkzeug
 
 from swagger_server.models.user import User as UserData# noqa: E501
+from swagger_server.get_random_number import backend
 from swagger_server.get_random_number.backend import *
 
 logger = logging.getLogger(__name__)
+
+
+class AuthException(connexion.ProblemException, werkzeug.exceptions.Forbidden):
+    """
+    Exception raised when an endpoint with `requires_authentication`
+    fails due to a lack of authentication.
+    """
+    def __init__(self, title=None, status=403, **kwargs):
+        super().__init__(title=title, status=status, **kwargs)
+
+
+def requires_authentication(func):
+    """
+    Add this decorator to an API endpoint to ensure that it checks for
+    authentication before allowing acccess.
+    """
+    def endpoint_wrapper(*args, **kwargs):
+        try:
+            header = connexion.request.headers['Authorization']
+            logger.info(header)
+            User.authenticate(header)
+        except KeyError:
+            logger.info("Missing 'Authorization' header")
+            raise AuthException("Missing 'Authorization' header")
+        except AuthenticationFailure as e:
+            logger.info("Unable to authenticate: {}".format(e))
+            raise AuthException("Resource requires authentication")
+        else:
+            return func(*args, **kwargs)
+
+    return endpoint_wrapper
+
 
 def activate_user(token):  # noqa: E501
     """activate_user
@@ -17,7 +50,7 @@ def activate_user(token):  # noqa: E501
 
     :rtype: None
     """
-    return 'do some magic!'
+    User.confirm(token)
 
 
 def create_user(user):  # noqa: E501
@@ -39,17 +72,18 @@ def create_user(user):  # noqa: E501
         logger.info("User already exists: '{}'".format(user.email))
 
 
+@requires_authentication
 def get_random_number():  # noqa: E501
     """get_random_number
 
     Get a single random digit from 1-6 # noqa: E501
 
-    :param secret_session_token: @@@ placeholder for whatever mechanism we use for authentication later
+    :param secret_session_token: A secret JWT token
     :type secret_session_token: str
 
     :rtype: int
     """
-    return 4
+    return backend.get_random_number()
 
 
 def login_user(user):  # noqa: E501
