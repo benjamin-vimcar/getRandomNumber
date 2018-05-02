@@ -1,4 +1,4 @@
-FROM python:3-alpine
+FROM tnir/mysqlclient
 
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app

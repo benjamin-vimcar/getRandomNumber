@@ -3,22 +3,30 @@ services:
 
   server:
     build: server
+    restart: always
     ports:
       - 8080:8080
     networks:
       - backend
+    depends_on:
+      - database
 
   database:
     image: mysql
     restart: always
+    command: --init-file /init/init.sql
     networks:
       - backend
     environment:
-      MYSQL_ROOT_PASSWORD: super_secret_mysql_root_password
+      # MYSQL_ROOT_PASSWORD: ''
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'true'
+      MYSQL_ROOT_HOST: '%'
     expose:
       - '3306'
     volumes:
       - /var/lib/mysql
+      - ./init.sql:/init/init.sql
+
 
 networks:
   backend:

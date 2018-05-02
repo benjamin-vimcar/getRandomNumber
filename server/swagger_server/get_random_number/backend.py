@@ -45,6 +45,8 @@ class User(object):
 
         Raises `NoSuchUser` if no such user exists.
         """
+        db.MYSQL_DB.connect().cursor()
+
         try:
             user_data = db.DB[email]
         except KeyError as e:
@@ -63,7 +65,7 @@ class User(object):
         if email not in db.DB:
             confirm_token = jwt.encode({'user': email},
                                        SUPER_SECRET_CONFIRMATION_KEY,
-                                       algorithm='HS256')
+                                       algorithm='HS256').decode()
 
             logger.info("Please tell {} the following message: '{}'".format(
                 email,
@@ -72,7 +74,6 @@ class User(object):
             db.DB[email] = {
                 'password': password,
                 'confirmed': False,
-                'confirm_token': confirm_token,
             }
         else:
             raise UserAlreadyExists("User already exists")
@@ -109,7 +110,7 @@ class User(object):
         else:
             return jwt.encode({'user': self.email},
                               SUPER_SECRET_SECRET_KEY,
-                              algorithm='HS256')
+                              algorithm='HS256').decode()
 
     @staticmethod
     def confirm(confirm_token):

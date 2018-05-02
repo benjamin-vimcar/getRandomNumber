@@ -99,7 +99,7 @@ def login_user(user):  # noqa: E501
     user = UserData.from_dict(connexion.request.get_json())  # noqa: E501
 
     try:
-        User.get(user.email).login(user.password)
+        return str(User.get(user.email).login(user.password))
     except (NoSuchUser, IncorrectPassword) as e:
         logger.info("Unable to log '{}' in: {}".format(user.email, e))
         return "Invalid login information", 403

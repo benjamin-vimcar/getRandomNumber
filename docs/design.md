@@ -41,3 +41,9 @@ A search of https://jwt.io/ and Pypi reveals several packages that handle JWT. I
 Unfortunately, Connexion only supports OpenAPI v2, which does not have native JWT support.
 
 I think I can also use a JWT to conveniently produce the e-mail confirmation token. 
+
+# A real database
+
+Whilst a global dict suffices for testing, it hardly meets the persistent requirement. Thus, we need an actual database. The choice here is largely dictated by the requirements on scale and availability. 
+
+In the simplest case, we could probably use a simple relational database (postgres/MySQL) - they're typically not excessively complex to manage and integrate with. At higher scale (or when/if we want geographic distribution), we might want to move to something designed for higher scale - Spanner or Cockroach DB, perhaps. 
