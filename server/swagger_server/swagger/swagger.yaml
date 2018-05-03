@@ -88,7 +88,7 @@ paths:
 securityDefinitions:
   jwt:
     type: "apiKey"
-    name: "token"
+    name: "Authorization"
     in: "header"
 definitions:
   User:
