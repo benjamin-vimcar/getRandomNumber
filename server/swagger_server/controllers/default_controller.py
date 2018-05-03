@@ -50,7 +50,7 @@ def activate_user(token):  # noqa: E501
 
     Confirm a registered user # noqa: E501
 
-    :param token: @@@ Some sort of confirmation token. Ideally, should be fast to link this back to the user.
+    :param token: Confirmation token previously e-mailed to the user
     :type token: str
 
     :rtype: None

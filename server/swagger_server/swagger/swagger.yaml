@@ -41,8 +41,7 @@ paths:
       parameters:
       - name: "token"
         in: "query"
-        description: "@@@ Some sort of confirmation token. Ideally, should be fast\
-          \ to link this back to the user."
+        description: "Confirmation token previously e-mailed to the user"
         required: true
         type: "string"
       responses:

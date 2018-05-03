@@ -1,3 +1,10 @@
+"""
+The core of the `get_random_number` application.
+
+The single resource is simple, so this module contains
+both the code for dealing with users and providing the resource.
+"""
+
 from swagger_server.get_random_number import db
 import jwt
 import logging
@@ -133,5 +140,7 @@ class User(object):
 def get_random_number():
     """
     Chosen by fair dice roll. Guaranteed to be random.
+
+    Returns an integer between 1 and 6
     """
     return 4
