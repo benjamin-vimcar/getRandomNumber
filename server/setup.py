@@ -1,6 +1,5 @@
 # coding: utf-8
 
-import sys
 from setuptools import setup, find_packages
 
 NAME = "swagger_server"
@@ -29,7 +28,7 @@ setup(
     entry_points={
         'console_scripts': ['swagger_server=swagger_server.__main__:main']},
     long_description="""\
-    The API for the getRandomNumber service. Provides a source of pseudorandom numbers to users.
+    The API for the getRandomNumber service.
+    Provides a source of pseudorandom numbers to users.
     """
 )
-

@@ -2,7 +2,6 @@
 
 import connexion
 import logging
-from flaskext.mysql import MySQL
 
 from swagger_server import encoder
 from swagger_server.get_random_number import db
@@ -17,15 +16,6 @@ def main():
         'swagger.yaml',
         validate_responses=True,
         arguments={'title': 'getRandomNumber'})
-    # mysql = MySQL()
-
-    # app.app.config['MYSQL_DATABASE_USER'] = 'root'
-    # app.app.config['MYSQL_DATABASE_PASSWORD'] = 'super_secret_mysql_root_password'
-    # app.app.config['MYSQL_DATABASE_DB'] = 'random_number'
-    # app.app.config['MYSQL_DATABASE_HOST'] = 'database'
-    # mysql.init_app(app.app)
-
-    # mysql.connect().cursor()
 
     db.init_mysql(app)
 

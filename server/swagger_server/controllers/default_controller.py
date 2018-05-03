@@ -2,9 +2,15 @@ import connexion
 import logging
 import werkzeug
 
-from swagger_server.models.user import User as UserData# noqa: E501
+from swagger_server.models.user import User as UserData
 from swagger_server.get_random_number import backend
-from swagger_server.get_random_number.backend import *
+from swagger_server.get_random_number.backend import (
+    User,
+    NoSuchUser,
+    AuthenticationFailure,
+    UserAlreadyExists,
+    IncorrectPassword
+)
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +32,6 @@ def requires_authentication(func):
     def endpoint_wrapper(*args, **kwargs):
         try:
             header = connexion.request.headers['Authorization']
-            logger.info(header)
             User.authenticate(header)
         except KeyError:
             logger.info("Missing 'Authorization' header")
